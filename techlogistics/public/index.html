@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>TechLogistics</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"/>
+
+  <style>
+    body{ background:#f6f7fb; }
+    .card{ border:0; box-shadow:0 6px 24px rgba(16,24,40,.04), 0 2px 4px rgba(16,24,40,.06); }
+    .section-title{ font-weight:700; margin-top:.25rem; }
+    pre{ background:#111; color:#eee; padding:12px; border-radius:8px; }
+    .table thead th{ background:#1849a9; color:#fff; }
+  </style>
+  <!-- Favicon emoji camión -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚚</text></svg>">
+</head>
+<body>
+  <div class="container py-4">
+    <!-- Encabezado -->
+    <div class="d-flex align-items-center mb-4">
+      <span class="me-2" style="font-size: 28px; line-height: 1;">🚚</span>
+      <h2 class="m-0">TechLogistics</h2>
+    </div>
+
+    <!-- CLIENTES -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="section-title">Clientes</h5>
+          <button class="btn btn-primary btn-sm" onclick="loadClientes()">Actualizar</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Email</th>
+                <th>Teléfono</th>
+                <th>Dirección</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="clientes"><tr><td colspan="6">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+
+        <hr class="my-4"/>
+
+        <h6 class="mb-3">Crear cliente</h6>
+        <div class="row g-2">
+          <div class="col-12 col-md-3">
+            <input id="cNombre" class="form-control" placeholder="Nombre *" />
+          </div>
+          <div class="col-12 col-md-3">
+            <input id="cEmail" class="form-control" placeholder="email@dominio.com" />
+          </div>
+          <div class="col-12 col-md-3">
+            <input id="cTel" class="form-control" placeholder="Teléfono" />
+          </div>
+          <div class="col-12 col-md-3">
+            <input id="cDir" class="form-control" placeholder="Dirección" />
+          </div>
+          <div class="col-12 mt-2">
+            <button class="btn btn-success" onclick="crearCliente()">Guardar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PRODUCTOS -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="section-title">Productos</h5>
+          <button class="btn btn-primary btn-sm" onclick="loadProductos()">Actualizar</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Stock</th>
+                <th>Creado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="productos"><tr><td colspan="6">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- PEDIDOS -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="section-title">Pedidos</h5>
+          <button class="btn btn-primary btn-sm" onclick="loadPedidos()">Actualizar</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Total</th>
+                <th>Fecha</th>
+              </tr>
+            </thead>
+            <tbody id="pedidos"><tr><td colspan="4">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+
+        <hr class="my-4"/>
+
+        <h6 class="mb-3">Crear pedido (rápido)</h6>
+        <div class="row g-2">
+          <div class="col-12 col-md-4">
+            <input id="pCliente" class="form-control" placeholder="ID cliente (número)" />
+          </div>
+          <div class="col-12 col-md-4">
+            <input id="pProducto" class="form-control" placeholder="ID producto (número)" />
+          </div>
+          <div class="col-12 col-md-4">
+            <input id="pCantidad" class="form-control" placeholder="Cantidad" />
+          </div>
+          <div class="col-12 mt-2">
+            <button class="btn btn-success" onclick="crearPedido()">Crear pedido</button>
+          </div>
+          <div class="col-12 mt-2">
+            <pre id="pedidoRes" class="mb-0"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ENVIOS -->
+    <div class="card mb-4">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center mb-2">
+          <h5 class="section-title">Envíos</h5>
+          <button class="btn btn-primary btn-sm" onclick="loadEnvios()">Actualizar</button>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-sm align-middle">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Pedido</th>
+                <th>Cliente</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="envios"><tr><td colspan="5">Cargando…</td></tr></tbody>
+          </table>
+        </div>
+
+        <hr class="my-4"/>
+
+        <h6 class="mb-3">Asignar envío</h6>
+        <div class="row g-2">
+          <div class="col-12 col-md-3">
+            <input id="aEnvio" class="form-control" placeholder="ID Envío" />
+          </div>
+          <div class="col-12 col-md-3">
+            <input id="aTrans" class="form-control" placeholder="ID Transportista" />
+          </div>
+          <div class="col-12 col-md-3">
+            <input id="aRuta" class="form-control" placeholder="ID Ruta" />
+          </div>
+          <div class="col-12 col-md-3">
+            <button class="btn btn-warning w-100" onclick="asignarEnvio()">Asignar</button>
+          </div>
+        </div>
+
+        <hr class="my-4"/>
+
+        <h6 class="mb-3">Tracking</h6>
+        <div class="row g-2 align-items-start">
+          <div class="col-12 col-md-3">
+            <input id="tEnvio" class="form-control" placeholder="ID Envío" />
+          </div>
+          <div class="col-12 col-md-3 d-flex gap-2">
+            <button class="btn btn-info" onclick="verTracking()">Ver tracking</button>
+            <button class="btn btn-secondary" onclick="suscribirTracking()">Suscribirse</button>
+          </div>
+          <div class="col-12 mt-2">
+            <pre id="tracking" class="mb-0"></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const API = '/api';
+    const $  = (id) => document.getElementById(id);
+
+    async function fetchJSON(url, options) {
+      const r = await fetch(url, options);
+      const text = await r.text();
+      let data; try { data = text ? JSON.parse(text) : null; } catch { data = text; }
+      if (!r.ok) throw new Error((data && data.error) || r.status + ' ' + r.statusText);
+      return data;
+    }
+
+    // ---------- CLIENTES ----------
+    async function loadClientes() {
+      const data = await fetchJSON(`${API}/clientes`);
+      $('clientes').innerHTML = data.map(c => `
+        <tr>
+          <td>${c.id}</td>
+          <td>${c.nombre ?? ''}</td>
+          <td>${c.email ?? ''}</td>
+          <td>${c.telefono ?? ''}</td>
+          <td>${c.direccion ?? ''}</td>
+          <td class="text-nowrap">
+            <button class="btn btn-sm btn-outline-primary me-1"
+              onclick="editarCliente(${c.id}, '${(c.nombre||'').replace(/'/g,"\\'")}', '${(c.email||'').replace(/'/g,"\\'")}', '${(c.telefono||'').replace(/'/g,"\\'")}', '${(c.direccion||'').replace(/'/g,"\\'")}')">
+              Editar
+            </button>
+            <button class="btn btn-sm btn-outline-danger" onclick="eliminarCliente(${c.id})">Eliminar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    async function crearCliente() {
+      const body = {
+        nombre: $('cNombre').value,
+        email: $('cEmail').value || null,
+        telefono: $('cTel').value || null,
+        direccion: $('cDir').value || null,
+      };
+      await fetchJSON(`${API}/clientes`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      $('cNombre').value = $('cEmail').value = $('cTel').value = $('cDir').value = '';
+      await loadClientes();
+    }
+    async function editarCliente(id, nombre, email, telefono, direccion) {
+      const n = prompt('Nombre:', nombre ?? '') ?? null;
+      const e = prompt('Email:',  email  ?? '') ?? null;
+      const t = prompt('Teléfono:', telefono ?? '') ?? null;
+      const d = prompt('Dirección:', direccion ?? '') ?? null;
+      await fetchJSON(`${API}/clientes/${id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ nombre: n, email: e, telefono: t, direccion: d })
+      });
+      await loadClientes();
+    }
+    async function eliminarCliente(id) {
+      if (!confirm('¿Eliminar cliente?')) return;
+      try {
+        await fetchJSON(`${API}/clientes/${id}`, { method: 'DELETE' });
+      } catch (e) { alert(e.message || 'No se pudo eliminar'); }
+      await loadClientes();
+    }
+
+    // ---------- PRODUCTOS ----------
+    function pickCreated(p) {
+      return p.creado_en || p.creado || p.created_at || p.createdAt || p.creadoEn || null;
+    }
+    async function loadProductos() {
+      const data = await fetchJSON(`${API}/productos`);
+      $('productos').innerHTML = data.map(p => {
+        const created = pickCreated(p);
+        const createdFmt = created ? new Date(created).toLocaleString() : '';
+        const precioFmt  = (Number(p.precio) || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+        return `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.nombre}</td>
+            <td>${precioFmt}</td>
+            <td>${p.stock}</td>
+            <td>${createdFmt}</td>
+            <td class="text-nowrap">
+              <button class="btn btn-sm btn-outline-primary me-1"
+                onclick="editarProducto(${p.id}, '${(p.nombre||'').replace(/'/g,"\\'")}', ${Number(p.precio)||0}, ${Number(p.stock)||0})">
+                Editar
+              </button>
+              <button class="btn btn-sm btn-outline-danger" onclick="eliminarProducto(${p.id})">Eliminar</button>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+    async function editarProducto(id, nombre, precio, stock) {
+      const n = prompt('Nombre:', nombre ?? '') ?? null;
+      const p = prompt('Precio:', precio ?? 0);
+      const s = prompt('Stock:',  stock  ?? 0);
+      await fetchJSON(`${API}/productos/${id}`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          nombre: n,
+          precio: p !== null ? Number(p) : null,
+          stock:  s !== null ? Number(s) : null
+        })
+      });
+      await loadProductos();
+    }
+    async function eliminarProducto(id) {
+      if (!confirm('¿Eliminar producto?')) return;
+      try {
+        await fetchJSON(`${API}/productos/${id}`, { method: 'DELETE' });
+      } catch (e) { alert(e.message || 'No se pudo eliminar'); }
+      await loadProductos();
+    }
+
+    // ---------- PEDIDOS ----------
+    async function loadPedidos() {
+      const data = await fetchJSON(`${API}/pedidos`);
+      $('pedidos').innerHTML = data.map(p => {
+        const fecha = p.fecha ? new Date(p.fecha).toLocaleString() : '';
+        const total = (Number(p.total) || 0).toLocaleString('es-CO', { style: 'currency', currency: 'COP' });
+        return `
+          <tr>
+            <td>${p.id}</td>
+            <td>${p.cliente ?? ''}</td>
+            <td>${total}</td>
+            <td>${fecha}</td>
+          </tr>
+        `;
+      }).join('');
+    }
+    async function crearPedido() {
+      const body = {
+        id_cliente: Number($('pCliente').value),
+        items: [{ id_producto: Number($('pProducto').value), cantidad: Number($('pCantidad').value) }]
+      };
+      const res = await fetchJSON(`${API}/pedidos`, {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      $('pedidoRes').textContent = JSON.stringify(res, null, 2);
+      $('pCliente').value = $('pProducto').value = $('pCantidad').value = '';
+      await loadPedidos(); await loadEnvios(); await loadProductos();
+    }
+
+    // ---------- ENVIOS ----------
+    async function loadEnvios() {
+      const data = await fetchJSON(`${API}/envios`);
+      $('envios').innerHTML = data.map(e => `
+        <tr>
+          <td>${e.id}</td>
+          <td>${e.id_pedido}</td>
+          <td>${e.cliente ?? ''}</td>
+          <td>${e.codigo ?? ''}</td>
+          <td class="text-nowrap">
+            <button class="btn btn-sm btn-info me-1" onclick="verTracking(${e.id})">Ver</button>
+            <button class="btn btn-sm btn-outline-secondary me-1" onclick="cambiarEstado(${e.id})">Estado…</button>
+            <button class="btn btn-sm btn-outline-danger" onclick="eliminarEnvio(${e.id})">Eliminar</button>
+          </td>
+        </tr>
+      `).join('');
+    }
+    async function asignarEnvio() {
+      const id = Number($('aEnvio').value);
+      const body = {
+        id_transportista: $('aTrans').value ? Number($('aTrans').value) : null,
+        id_ruta:          $('aRuta').value ? Number($('aRuta').value) : null,
+      };
+      await fetchJSON(`${API}/envios/${id}/asignar`, {
+        method: 'PUT', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body)
+      });
+      alert('Asignado');
+      $('aEnvio').value = $('aTrans').value = $('aRuta').value = '';
+      await loadEnvios();
+    }
+    async function verTracking(id) {
+      const idE = id || Number($('tEnvio').value);
+      if (!idE) return alert('Ingresa ID de envío');
+      const data = await fetchJSON(`${API}/envios/${idE}/tracking`);
+      $('tracking').textContent = JSON.stringify(data, null, 2);
+    }
+    function suscribirTracking() {
+      const idE = Number($('tEnvio').value);
+      if (!idE) return alert('Ingresa ID de envío');
+      const es = new EventSource(`${API}/envios/${idE}/stream`);
+      es.onmessage = (m) => {
+        try { const obj = JSON.parse(m.data);
+          $('tracking').textContent += '\n' + JSON.stringify(obj);
+        } catch { $('tracking').textContent += '\n' + m.data; }
+      };
+      es.onerror = (e) => console.warn('SSE error', e);
+    }
+    async function cambiarEstado(id) {
+      const cod = prompt('Código de estado (CREADO | EN_TRANSITO | ENTREGADO):', 'EN_TRANSITO');
+      if (!cod) return;
+      await fetchJSON(`${API}/envios/${id}/estado`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ codigo: cod })
+      });
+      await loadEnvios(); await verTracking(id);
+    }
+    async function eliminarEnvio(id) {
+      if (!confirm('¿Eliminar envío?')) return;
+      try { await fetchJSON(`${API}/envios/${id}`, { method: 'DELETE' }); }
+      catch (e) { alert(e.message || 'No se pudo eliminar'); }
+      await loadEnvios();
+    }
+
+    // Exponer globales para onclick
+    window.crearCliente = crearCliente;
+    window.editarCliente = editarCliente;
+    window.eliminarCliente = eliminarCliente;
+    window.loadClientes  = loadClientes;
+
+    window.loadProductos = loadProductos;
+    window.editarProducto = editarProducto;
+    window.eliminarProducto = eliminarProducto;
+
+    window.loadPedidos   = loadPedidos;
+    window.crearPedido   = crearPedido;
+
+    window.loadEnvios    = loadEnvios;
+    window.asignarEnvio  = asignarEnvio;
+    window.verTracking   = verTracking;
+    window.suscribirTracking = suscribirTracking;
+    window.cambiarEstado = cambiarEstado;
+    window.eliminarEnvio = eliminarEnvio;
+
+    // Init
+    (async function init() {
+      try {
+        await loadClientes();
+        await loadProductos();
+        await loadPedidos();
+        await loadEnvios();
+      } catch (e) {
+        console.error('INIT ERROR', e);
+      }
+    })();
+  </script>
+</body>
+</html>
